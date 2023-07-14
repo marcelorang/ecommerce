@@ -1,4 +1,5 @@
 "use client";
+
 import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
@@ -22,15 +23,16 @@ import {
     FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { AlertModal } from "@/components/modals/alert-modal";
 
+
+const formSchema = z.object({
+    name: z.string().min(2),
+
+});
 interface SettingFormProps {
    initialData: Store; 
 }
-
-const formSchema = z.object({
-    name: z.string().min(1),
-
-});
 
 type SettingsFormValues = z.infer<typeof formSchema>;
 
@@ -52,7 +54,7 @@ export const SettingsForm: React.FC<SettingFormProps> = ({
     const onSubmit = async (data: SettingsFormValues) => {
        try {
         setLoading(true);
-        await axios.patch(`/api/stores/${params.storeI}`, data)
+         await axios.patch(`/api/stores/${params.storeId}`, data);
         router.refresh();
         toast.success("Store updated.");
 
@@ -64,9 +66,22 @@ export const SettingsForm: React.FC<SettingFormProps> = ({
        }
     };
 
+    const onDelete = async () => {
+        try{
+
+        }catch(error) {
+           toast.error("Make sure you removed all products and categories first."); 
+        }
+    }
 
     return (
         <>
+        <AlertModal 
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          onConfirm={() => {}}
+          loading={loading}  
+        />
         <div className="flex items-center justify-between">
             <Heading
                 title="Settings"
