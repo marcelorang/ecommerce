@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 
 const formSchema = z.object({
@@ -42,6 +44,7 @@ export const SettingsForm: React.FC<SettingFormProps> = ({
 }) => {
     const params = useParams();
     const router = useRouter();
+    const origin = useOrigin();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -68,9 +71,16 @@ export const SettingsForm: React.FC<SettingFormProps> = ({
 
     const onDelete = async () => {
         try{
-
+            setLoading(true);
+            await axios.delete(`/api/stores/${params.storeId}`)
+            router.refresh();
+            router.push("/");
+            toast.success("Store deleted.");
         }catch(error) {
            toast.error("Make sure you removed all products and categories first."); 
+        } finally {
+            setLoading(false);
+            setOpen(false)
         }
     }
 
@@ -79,7 +89,7 @@ export const SettingsForm: React.FC<SettingFormProps> = ({
         <AlertModal 
           isOpen={open}
           onClose={() => setOpen(false)}
-          onConfirm={() => {}}
+          onConfirm={onDelete}
           loading={loading}  
         />
         <div className="flex items-center justify-between">
@@ -119,6 +129,11 @@ export const SettingsForm: React.FC<SettingFormProps> = ({
             <Button disabled={loading} className="ml-auto" type="submit">Save Changes</Button>
             </form>
         </Form>
+        <br/>
+        <Separator />
+        <br/>
+        <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`}
+         variant="public"/>
         </>
     );
 };
