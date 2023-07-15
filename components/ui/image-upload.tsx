@@ -35,7 +35,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         return null;
     }
 
-    //TODO: RESOLVER o FLEX DO CONTAINER DA IMAGEM 4h:02 tempo no video
+    //TODO: RESOLVER o FLEX DO CONTAINER DA IMAGEM 4h:02 tempo no video style usado de improviso
     return (
         <div>
         
